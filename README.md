@@ -12,9 +12,9 @@
 <br>
 <div align='center'>
 
-[<img src='screenshots/empty-state.png' width='160'>](screenshots/empty-state.png)
-[<img src='screenshots/task-list.png' width='160'>](screenshots/task-list.png)
-[<img src='screenshots/edit-modal.png' width='160'>](screenshots/edit-modal.png)
+[<img src='screenshots/empty-state.png' width='200'>](screenshots/empty-state.png)
+[<img src='screenshots/task-list.png' width='200'>](screenshots/task-list.png)
+[<img src='screenshots/edit-modal.png' width='200'>](screenshots/edit-modal.png)
 
 <!-- [<img src='screenshots/add-task.png' width='160'>](screenshots/add-task.png) -->
 </div>
