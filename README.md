@@ -9,7 +9,15 @@
 - **Frontend:** 👉 [task.samarth.site](https://task.samarth.site)
 - **Backend API:** 👉 [api.task](https://api.tasks.samarth.site/api/tasks)
 
----
+<br>
+<div align='center'>
+
+[<img src='screenshots/empty-state.png' width='160'>](screenshots/empty-state.png)
+[<img src='screenshots/task-list.png' width='160'>](screenshots/task-list.png)
+[<img src='screenshots/edit-modal.png' width='160'>](screenshots/edit-modal.png)
+
+<!-- [<img src='screenshots/add-task.png' width='160'>](screenshots/add-task.png) -->
+</div>
 
 ## ✨ Features
 
@@ -38,8 +46,6 @@
 - Notifications for overdue tasks
 - Dark mode
 
----
-
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -60,8 +66,6 @@
 - Frontend: **Vercel**
 - Backend: **Render**
 - DNS & Domains: **Cloudflare**
-
----
 
 ## 📂 Project Structure
 
@@ -115,8 +119,6 @@ student-task-manager/
     └── edit-modal.png
 ```
 
----
-
 ## 🗄️ Data Model
 
 ### Task Schema
@@ -133,8 +135,6 @@ student-task-manager/
   updatedAt: Date
 }
 ```
-
----
 
 ## 🔌 API Documentation
 
@@ -157,8 +157,6 @@ https://api.tasks.samarth.site/api
 - `?status=pending`
 - `?status=completed`
 
----
-
 ## ⚙️ Environment Variables
 
 ### Backend (`backend/.env`)
@@ -173,8 +171,6 @@ MONGO_URI=your_mongodb_connection_string
 ```env
 VITE_API_URL=https://api.tasks.samarth.site/api
 ```
-
----
 
 ## 🚀 Local Development Setup
 
@@ -213,15 +209,11 @@ Frontend runs at:
 http://localhost:5173
 ```
 
----
-
 ## 🌍 Deployment Overview
 
 - Frontend deployed on **Vercel** with a custom domain
 - Backend deployed on **Render** with MongoDB Atlas
 - DNS and HTTPS managed via **Cloudflare**
-
----
 
 ## 🧪 Testing & Validation
 
@@ -229,8 +221,6 @@ http://localhost:5173
 - Browser testing for all CRUD operations
 - Responsive testing on mobile & desktop
 - ESLint used for code quality and consistency
-
----
 
 ## 📈 Learning Outcomes
 
@@ -240,7 +230,5 @@ http://localhost:5173
 - Debugged real-world deployment issues
 - Configured custom domains and environment variables
 - Gained hands-on experience with production deployment
-
----
 
 <!-- xamarth -->
