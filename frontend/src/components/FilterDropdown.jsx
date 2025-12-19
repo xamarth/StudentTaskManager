@@ -43,13 +43,12 @@ export default function FilterDropdown({
       {/* Trigger button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center justify-between w-full gap-2 px-4 py-2 text-sm font-medium transition bg-white border shadow-sm sm:w-auto rounded-xl hover:bg-gray-100"
+        className="flex items-center justify-between w-full gap-2 px-4 py-2 text-sm font-medium transition bg-white shadow-sm border/10 sm:w-auto rounded-xl hover:bg-gray-100"
       >
         <span className="flex items-center gap-2">
           Filter
           {activeBadge && (
-            <span className="text-xs px-2 py-0.5 rounded-full
-                             bg-blue-100 text-blue-700">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
               {activeBadge}
             </span>
           )}
@@ -67,7 +66,7 @@ export default function FilterDropdown({
         className={`
           absolute left-0 sm:right-0 sm:left-auto
           mt-2 w-full sm:w-64
-          bg-white rounded-2xl shadow-xl border
+          bg-white rounded-2xl shadow-xl border/10
           p-4 z-30
           transform transition-all duration-200 ease-out
           ${open

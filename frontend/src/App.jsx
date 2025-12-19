@@ -61,6 +61,26 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const disableRightClick = (e) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", disableRightClick);
+
+    return () => {
+      document.removeEventListener("contextmenu", disableRightClick);
+    };
+  }, []);
+
+  useEffect(() => {
+    const disableSelect = (e) => e.preventDefault();
+    document.addEventListener("selectstart", disableSelect);
+
+    return () =>
+      document.removeEventListener("selectstart", disableSelect);
+  }, []);
+
   return (
     // <div className="min-h-screen bg-gray-100">
     <div className="bg-gray-100 max-h-dvh">
