@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const taskSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -27,7 +32,7 @@ const taskSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // creates createdAt & updatedAt
+    timestamps: true, // this will add createdAt and updatedAt fields
   }
 );
 
