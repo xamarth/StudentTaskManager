@@ -6,8 +6,14 @@ import TaskList from "./components/TaskList";
 import AddTaskModal from "./components/AddTaskModal";
 import EditTaskModal from "./components/EditTaskModal";
 import FilterDropdown from "./components/FilterDropdown";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 export default function App() {
+  const [isAuth, setIsAuth] = useState(
+    Boolean(localStorage.getItem("token"))
+  );
+  const [showSignup, setShowSignup] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -62,28 +68,42 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const disableRightClick = (e) => {
-      e.preventDefault();
-    };
+    if (!isAuth) return;
 
-    document.addEventListener("contextmenu", disableRightClick);
+    let ignore = false;
+
+    const load = async () => {
+      setLoading(true);
+      const res = await api.get("/tasks");
+      if (!ignore) {
+        setTasks(res.data);
+        setLoading(false);
+      }
+    };
+    load();
 
     return () => {
-      document.removeEventListener("contextmenu", disableRightClick);
+      ignore = true;
     };
-  }, []);
+  }, [isAuth]);
 
-  useEffect(() => {
-    const disableSelect = (e) => e.preventDefault();
-    document.addEventListener("selectstart", disableSelect);
-
-    return () =>
-      document.removeEventListener("selectstart", disableSelect);
-  }, []);
-
+  if (!isAuth) {
+    return showSignup ? (
+      <Signup
+        onSignup={() => {
+          setShowSignup(false);
+        }}
+      />
+    ) : (
+      <Login
+        onLogin={() => setIsAuth(true)}
+        onSwitch={() => setShowSignup(true)}
+      />
+    );
+  }
+  console.log("isAuth:", isAuth);
   return (
-    // <div className="min-h-screen bg-gray-100">
-    <div className="bg-gray-100 max-h-dvh">
+    <div className="min-h-screen bg-gray-100">
       <Header onAdd={() => setShowAddModal(true)} />
 
       {/* <main className="max-w-5xl px-4 py-6 mx-auto"> */}
