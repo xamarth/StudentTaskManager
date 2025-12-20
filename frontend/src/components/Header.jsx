@@ -1,16 +1,25 @@
 export default function Header({ onAdd }) {
   return (
     <header className="bg-white shadow-sm">
-      <div className="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="flex items-center justify-between max-w-5xl px-4 py-4 mx-auto">
         <h1 className="text-xl font-semibold text-gray-800">
           Student Task Manager
         </h1>
 
         <button
           onClick={onAdd}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          className="px-4 py-2 text-white transition bg-blue-600 rounded-md hover:bg-blue-700"
         >
           Add Task
+        </button>
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.reload();
+          }}
+          className="text-sm text-red-500 hover:underline"
+        >
+          Logout
         </button>
       </div>
     </header>
