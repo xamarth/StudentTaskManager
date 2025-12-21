@@ -12,11 +12,16 @@
 <br>
 <div align='center'>
 
-[<img src='screenshots/empty-state.png' width='200'>](screenshots/empty-state.png)
-[<img src='screenshots/task-list.png' width='200'>](screenshots/task-list.png)
-[<img src='screenshots/edit-modal.png' width='200'>](screenshots/edit-modal.png)
+[<img src='screenshots/signup.png' width='180'>](screenshots/signup.png)
+[<img src='screenshots/login.png' width='180'>](screenshots/login.png)
+[<img src='screenshots/empty-state.png' width='180'>](screenshots/empty-state.png)
+[<img src='screenshots/add-task.png' width='180'>](screenshots/add-task.png)
 
-<!-- [<img src='screenshots/add-task.png' width='160'>](screenshots/add-task.png) -->
+[<img src='screenshots/task-list.png' width='180'>](screenshots/task-list.png)
+[<img src='screenshots/edit-modal.png' width='180'>](screenshots/edit-modal.png)
+[<img src='screenshots/filters.png' width='180'>](screenshots/filters.png)
+[<img src='screenshots/search.png' width='180'>](screenshots/search.png)
+
 </div>
 
 ## ✨ Features
