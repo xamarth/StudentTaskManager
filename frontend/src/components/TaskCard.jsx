@@ -27,7 +27,7 @@ export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 p-5 flex flex-col justify-between relative group">
       <div
         {...dragHandleProps}
-        className="absolute top-1/2 -translate-y-1/2 right-3 z-10 opacity-0 group-hover:opacity-100 transition text-gray-400 cursor-grab hover:text-gray-600 active:cursor-grabbing"
+        className="absolute top-1/2 -translate-y-1/2 right-3 md:opacity-0 group-hover:opacity-100 transition text-gray-400 cursor-grab hover:text-gray-600 active:cursor-grabbing"
         title="Drag to reorder"
         onClick={(e) => e.stopPropagation()}
       >
