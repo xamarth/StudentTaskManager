@@ -21,6 +21,7 @@ export default function App() {
   // const [activeFilter, setActiveFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("none");
+  const [search, setSearch] = useState("");
 
   const fetchTasks = useCallback(async (params = {}) => {
     setLoading(true);
@@ -34,6 +35,15 @@ export default function App() {
       if (statusFilter === "pending") return !task.completed;
       if (statusFilter === "completed") return task.completed;
       return true;
+    })
+    .filter((task) => {
+      if (!search.trim()) return true;
+
+      const query = search.toLowerCase();
+      return (
+        task.title.toLowerCase().includes(query) ||
+        task.description?.toLowerCase().includes(query)
+      );
     })
     .sort((a, b) => {
       if (sortBy === "priority") {
@@ -111,7 +121,14 @@ export default function App() {
 
         {/* <FilterBar onApply={fetchTasks} active={activeFilter} setActive={setActiveFilter} /> */}
 
-        <div className="flex justify-end">
+        <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
           <FilterDropdown
             status={statusFilter}
             setStatus={setStatusFilter}
