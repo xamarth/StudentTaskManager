@@ -2,12 +2,12 @@
 
 <h1 align='center'>📘 Student Task Manager</h1>
 
-### <p align='center'>A modern full-stack task management web application built with React, Express, and MongoDB, showcasing end-to-end development, deployment, and real-world debugging skills.</p>
+<p align='center'><b>A modern, full-stack task management web application with authentication, overdue notifications, drag-and-drop, and a responsive UI. Built with React, Express, and MongoDB, and deployed to production.</b></p>
 
 ## 🌐 Live Demo
 
 - **Frontend:** 👉 [task.samarth.site](https://task.samarth.site)
-- **Backend API:** 👉 [api.task](https://api.tasks.samarth.site/api/tasks)
+- **Backend API:** 👉 [api.tasks.samarth.site/api/tasks](https://api.tasks.samarth.site/api/tasks)
 
 <br>
 <div align='center'>
@@ -21,50 +21,51 @@
 
 ## ✨ Features
 
-### ✅ Core Features
+### ✅ Core Functionality
 
-- Create tasks with **title, description, priority, and due date**
-- Edit existing tasks
-- Mark tasks as **completed / pending**
+- User authentication (signup/login) with JWT
+- Create, edit, delete, and update tasks
+- Task properties: title, description, priority (low/medium/high), due date, completion status
+- Filter by status (All / Pending / Completed)
+- Sort by priority or due date
+- Search tasks by title/description
+- Mark tasks as complete/pending
 - Delete tasks
-- Filter tasks by **All / Pending / Completed**
-- Responsive UI (mobile & desktop)
-- Persistent data storage with MongoDB
 
-### 🎨 UI & UX Enhancements
+### 🏆 Advanced Features
 
-- Clean empty-state UI with call-to-action
-- Modal-based Add / Edit task flow
-- Visual indicators for completed & overdue tasks
-- Smooth hover and transition effects
-
-### 🚀 Future Enhancements
-
-- User authentication
-- Search functionality
-- Drag-and-drop task ordering
-- Notifications for overdue tasks
-- Dark mode
+- Drag-and-drop task reordering (@dnd-kit)
+- Overdue task detection and browser notifications
+- Notification panel for overdue tasks
+- Auto-refresh overdue tasks (every 5 minutes)
+- Responsive design (mobile & desktop)
+- Clean empty-state UI
+- Visual indicators for overdue tasks
+- Modal-based add/edit workflows
 
 ## 🛠️ Tech Stack
 
 ### Frontend
 
-- React (Vite)
-- Tailwind CSS
+- React 19 (Vite)
+- Tailwind CSS 4
 - Axios
+- @dnd-kit (drag-and-drop)
+- react-hot-toast
 
 ### Backend
 
 - Node.js
-- Express.js
+- Express.js 5
 - MongoDB Atlas
-- Mongoose
+- Mongoose 9
+- JWT, bcryptjs
 
 ### Deployment & Infrastructure
 
 - Frontend: **Vercel**
 - Backend: **Render**
+- Database: **MongoDB Atlas**
 - DNS & Domains: **Cloudflare**
 
 ## 📂 Project Structure
@@ -74,15 +75,18 @@ student-task-manager/
 │
 ├── frontend/                       # Frontend (React + Vite)
 │   ├── public/
-│   │   └── favicon.svg
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── Header.jsx
 │   │   │   ├── TaskList.jsx
 │   │   │   ├── TaskCard.jsx
-│   │   │   ├── FilterBar.jsx
+│   │   │   ├── FilterDropdown.jsx
 │   │   │   ├── AddTaskModal.jsx
-│   │   │   └── EditTaskModal.jsx
+│   │   │   ├── EditTaskModal.jsx
+│   │   │   └── NotificationPanel.jsx
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   └── Signup.jsx
 │   │   ├── services/
 │   │   │   └── api.js              # Axios instance
 │   │   ├── App.jsx                 # Root component
@@ -157,19 +161,20 @@ https://api.tasks.samarth.site/api
 - `?status=pending`
 - `?status=completed`
 
-## ⚙️ Environment Variables
+## 📝 Configuration
 
-### Backend (`backend/.env`)
+**Backend** (`.env` required):
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=<MongoDB connection string>
+JWT_SECRET=<secret key>
 ```
 
-### Frontend (`frontend/.env`)
+**Frontend** (`.env` required):
 
 ```env
-VITE_API_URL=https://api.tasks.samarth.site/api
+VITE_API_URL=<backend API URL>
 ```
 
 ## 🚀 Local Development Setup
@@ -222,13 +227,27 @@ http://localhost:5173
 - Responsive testing on mobile & desktop
 - ESLint used for code quality and consistency
 
-## 📈 Learning Outcomes
+## 🎓 Assessment & Improvements
 
-- Built RESTful APIs with Express
-- Integrated MongoDB using Mongoose
-- Managed state and side effects in React
-- Debugged real-world deployment issues
-- Configured custom domains and environment variables
-- Gained hands-on experience with production deployment
+This is a **well-structured, production-ready full-stack application** demonstrating:
 
-<!-- xamarth -->
+- Modern web development practices
+- Full-stack JavaScript proficiency
+- RESTful API design
+- User authentication and security
+- Responsive UI and UX
+- Cloud deployment experience
+- Real-world features (notifications, drag-and-drop, filtering)
+
+### Areas for Future Improvement
+
+- Add input validation (e.g., express-validator)
+- Centralize error handling in backend
+- Add automated tests (backend & frontend)
+- Add API documentation (Swagger/OpenAPI)
+- Consider TypeScript for type safety
+- Add CI/CD configuration
+
+---
+
+<p align="center"><b>Made with ❤️ by xamarth</b></p>
