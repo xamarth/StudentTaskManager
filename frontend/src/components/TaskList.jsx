@@ -1,10 +1,50 @@
 import TaskCard from "./TaskCard";
+import { DndContext } from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-export default function TaskList({ tasks, refresh, onEdit }) {
+function SortableTask({ task, children }) {
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+  } = useSortable({ id: task._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      {children({ dragHandleProps: { ...attributes, ...listeners } })}
+    </div>
+  );
+}
+
+export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    setTasks((items) => {
+      const oldIndex = items.findIndex((t) => t._id === active.id);
+      const newIndex = items.findIndex((t) => t._id === over.id);
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  };
+
   if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center">
-        <p className="text-gray-500 mb-2">
+        <p className="mb-2 text-gray-500">
           No tasks yet
         </p>
         <p className="text-sm text-gray-400">
@@ -15,10 +55,24 @@ export default function TaskList({ tasks, refresh, onEdit }) {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {tasks.map((task) => (
-        <TaskCard key={task._id} task={task} refresh={refresh} onEdit={onEdit} />
-      ))}
-    </div>
+    <DndContext onDragEnd={handleDragEnd}>
+      <SortableContext items={tasks.map((t) => t._id)}>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {tasks.map((task) => (
+            <SortableTask key={task._id} task={task}>
+              {({ dragHandleProps }) => (
+                <TaskCard
+                  key={task._id}
+                  task={task}
+                  refresh={refresh}
+                  onEdit={onEdit}
+                  dragHandleProps={dragHandleProps}
+                />
+              )}
+            </SortableTask>
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   );
 }

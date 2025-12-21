@@ -113,7 +113,7 @@ export default function App() {
   }
   console.log("isAuth:", isAuth);
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen overflow-hidden bg-gray-100">
       <Header onAdd={() => setShowAddModal(true)} />
 
       {/* <main className="max-w-5xl px-4 py-6 mx-auto"> */}
@@ -143,6 +143,7 @@ export default function App() {
           <TaskList
             // tasks={tasks}
             tasks={visibleTasks}
+            setTasks={setTasks}
             refresh={fetchTasks}
             onEdit={setEditingTask}
           />
