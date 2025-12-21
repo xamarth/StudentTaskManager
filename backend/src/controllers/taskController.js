@@ -106,3 +106,22 @@ exports.deleteTask = async (req, res) => {
     res.status(400).json({ message: "Invalid task ID" });
   }
 };
+
+// GET /api/tasks/overdue
+exports.getOverdueTasks = async (req, res) => {
+  try {
+    const now = new Date();
+    const overdueTasks = await Task.find({
+      userId: req.user.id,
+      completed: false,
+      dueDate: { $lt: now },
+    }).sort({ dueDate: 1 });
+
+    res.status(200).json({
+      count: overdueTasks.length,
+      tasks: overdueTasks,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

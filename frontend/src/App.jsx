@@ -1,11 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import api from "./services/api";
 import Header from "./components/Header";
 import TaskList from "./components/TaskList";
-// import FilterBar from "./components/FilterBar";
 import AddTaskModal from "./components/AddTaskModal";
 import EditTaskModal from "./components/EditTaskModal";
 import FilterDropdown from "./components/FilterDropdown";
+import NotificationPanel from "./components/NotificationPanel";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
@@ -18,17 +18,57 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  // const [activeFilter, setActiveFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("none");
   const [search, setSearch] = useState("");
+  const [overdueTasks, setOverdueTasks] = useState([]);
+  const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      return Notification.permission;
+    }
+    return "default";
+  });
+  const previousOverdueCountRef = useRef(0);
 
   const fetchTasks = useCallback(async (params = {}) => {
+    if (!isAuth) return;
     setLoading(true);
     const res = await api.get("/tasks", { params });
     setTasks(res.data);
     setLoading(false);
-  }, []);
+  }, [isAuth]);
+
+  const fetchOverdueTasks = useCallback(async () => {
+    if (!isAuth) return;
+    try {
+      const res = await api.get("/tasks/overdue");
+      const newOverdueTasks = res.data.tasks || [];
+      setOverdueTasks(newOverdueTasks);
+
+      if (
+        "Notification" in window &&
+        notificationPermission === "granted" &&
+        newOverdueTasks.length > previousOverdueCountRef.current
+      ) {
+        const newCount =
+          newOverdueTasks.length - previousOverdueCountRef.current;
+        new Notification(`You have ${newCount} new overdue task${newCount > 1 ? "s" : ""}`, {
+          body: newOverdueTasks
+            .slice(0, 3)
+            .map((t) => t.title)
+            .join(", "),
+          icon: "/favicon.svg",
+          badge: "/favicon.svg",
+          tag: "overdue-tasks",
+        });
+      }
+
+      previousOverdueCountRef.current = newOverdueTasks.length;
+    } catch (error) {
+      console.error("Failed to fetch overdue tasks:", error);
+    }
+  }, [notificationPermission, isAuth]);
 
   const visibleTasks = tasks
     .filter((task) => {
@@ -59,25 +99,6 @@ export default function App() {
     });
 
   useEffect(() => {
-    let ignore = false;
-
-    const load = async () => {
-      setLoading(true);
-      const res = await api.get("/tasks");
-      if (!ignore) {
-        setTasks(res.data);
-        setLoading(false);
-      }
-    };
-
-    load();
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isAuth) return;
 
     let ignore = false;
@@ -97,6 +118,39 @@ export default function App() {
     };
   }, [isAuth]);
 
+  useEffect(() => {
+    if (!isAuth) return;
+
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then((permission) => {
+        setNotificationPermission(permission);
+      });
+    }
+
+    const timeoutId = setTimeout(() => {
+      fetchOverdueTasks();
+    }, 0);
+
+    const interval = setInterval(() => {
+      fetchOverdueTasks();
+    }, 5 * 60 * 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(interval);
+    };
+  }, [isAuth, fetchOverdueTasks]);
+
+  useEffect(() => {
+    if (!isAuth) return;
+
+    const timeoutId = setTimeout(() => {
+      fetchOverdueTasks();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [tasks.length, isAuth, fetchOverdueTasks]);
+
   if (!isAuth) {
     return showSignup ? (
       <Signup
@@ -111,16 +165,39 @@ export default function App() {
       />
     );
   }
-  console.log("isAuth:", isAuth);
+  // console.log("isAuth:", isAuth);
+  const handleNotificationClick = () => {
+    setShowNotificationPanel(!showNotificationPanel);
+  };
+
+  const handleOverdueTaskClick = (task) => {
+    setEditingTask(task);
+    setShowNotificationPanel(false);
+  };
+
   return (
     <div className="min-h-screen overflow-hidden bg-gray-100">
-      <Header onAdd={() => setShowAddModal(true)} />
+      <div className="relative">
+        <Header
+          onAdd={() => setShowAddModal(true)}
+          onNotificationClick={handleNotificationClick}
+          overdueCount={overdueTasks.length}
+        />
+        {showNotificationPanel && (
+          <div className="absolute right-4 top-full z-50 sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-5xl sm:w-full sm:px-4">
+            <div className="sm:flex sm:justify-end">
+              <NotificationPanel
+                isOpen={showNotificationPanel}
+                onClose={() => setShowNotificationPanel(false)}
+                overdueTasks={overdueTasks}
+                onTaskClick={handleOverdueTaskClick}
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
-      {/* <main className="max-w-5xl px-4 py-6 mx-auto"> */}
       <main className="max-w-6xl px-4 py-6 mx-auto sm:px-6 sm:py-10">
-
-        {/* <FilterBar onApply={fetchTasks} active={activeFilter} setActive={setActiveFilter} /> */}
-
         <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
           <input
             type="text"
@@ -141,7 +218,6 @@ export default function App() {
           <p className="mt-6 text-center text-gray-500">Loading tasks...</p>
         ) : (
           <TaskList
-            // tasks={tasks}
             tasks={visibleTasks}
             setTasks={setTasks}
             refresh={fetchTasks}
@@ -153,14 +229,20 @@ export default function App() {
       {showAddModal && (
         <AddTaskModal
           onClose={() => setShowAddModal(false)}
-          onAdded={fetchTasks}
+          onAdded={() => {
+            fetchTasks();
+            fetchOverdueTasks();
+          }}
         />
       )}
       {editingTask && (
         <EditTaskModal
           task={editingTask}
           onClose={() => setEditingTask(null)}
-          onUpdated={fetchTasks}
+          onUpdated={() => {
+            fetchTasks();
+            fetchOverdueTasks();
+          }}
         />
       )}
     </div>

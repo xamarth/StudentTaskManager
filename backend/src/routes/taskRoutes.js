@@ -6,12 +6,14 @@ const {
   getTaskById,
   updateTask,
   deleteTask,
+  getOverdueTasks,
 } = require("../controllers/taskController");
 const auth = require("../middleware/auth");
 
 router.use(auth);
 router.post("/", createTask);
 router.get("/", getTasks);
+router.get("/overdue", getOverdueTasks);
 router.get("/:id", getTaskById);
 router.put("/:id", updateTask);
 router.delete("/:id", deleteTask);
