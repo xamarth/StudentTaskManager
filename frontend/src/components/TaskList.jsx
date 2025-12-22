@@ -1,5 +1,12 @@
 import TaskCard from "./TaskCard";
-import { DndContext } from "@dnd-kit/core";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -29,6 +36,20 @@ function SortableTask({ task, children }) {
 }
 
 export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // desktop drag threshold
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,   // long-press on mobile
+        tolerance: 5,
+      },
+    })
+  );
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
 
@@ -55,7 +76,10 @@ export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
   }
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}>
       <SortableContext items={tasks.map((t) => t._id)}>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tasks.map((task) => (
