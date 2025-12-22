@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
-export default function Login({ onLogin, onSwitch }) {
+export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,7 +16,7 @@ export default function Login({ onLogin, onSwitch }) {
         password,
       });
       localStorage.setItem("token", res.data.token);
-      onLogin();
+      navigate("/", { replace: true });
     } catch {
       setError("Invalid email or password");
     }
@@ -55,13 +57,12 @@ export default function Login({ onLogin, onSwitch }) {
         </button>
         <p className="mt-4 text-sm text-center">
           Don&apos;t have an account?{" "}
-          <button
-            type="button"
-            onClick={onSwitch}
+          <Link
+            to="/signup"
             className="text-blue-600 hover:underline"
           >
             Sign up
-          </button>
+          </Link>
         </p>
       </form>
     </div>

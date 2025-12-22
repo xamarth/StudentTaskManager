@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { Routes, Route, Navigate, useSearchParams } from "react-router-dom";
 import api from "./services/api";
 import Header from "./components/Header";
 import TaskList from "./components/TaskList";
@@ -9,18 +10,11 @@ import NotificationPanel from "./components/NotificationPanel";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
-export default function App() {
-  const [isAuth, setIsAuth] = useState(
-    Boolean(localStorage.getItem("token"))
-  );
-  const [showSignup, setShowSignup] = useState(false);
+function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("none");
-  const [search, setSearch] = useState("");
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(() => {
@@ -30,17 +24,66 @@ export default function App() {
     return "default";
   });
   const previousOverdueCountRef = useRef(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const statusFilter = searchParams.get("status") || "all";
+  const sortBy = searchParams.get("sort") || "none";
+  const search = searchParams.get("search") || "";
+
+  const setStatusFilter = (value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === "all") {
+      newParams.delete("status");
+    } else {
+      newParams.set("status", value);
+    }
+    setSearchParams(newParams);
+  };
+
+  const setSortBy = (value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === "none") {
+      newParams.delete("sort");
+    } else {
+      newParams.set("sort", value);
+    }
+    setSearchParams(newParams);
+  };
+
+  const [searchInput, setSearchInput] = useState(search);
+
+  const updateSearchInURL = useCallback((value) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (!value.trim()) {
+      newParams.delete("search");
+    } else {
+      newParams.set("search", value);
+    }
+    setSearchParams(newParams);
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (searchInput !== search) {
+        updateSearchInURL(searchInput);
+      }
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput, search, updateSearchInURL]);
 
   const fetchTasks = useCallback(async (params = {}) => {
-    if (!isAuth) return;
     setLoading(true);
     const res = await api.get("/tasks", { params });
     setTasks(res.data);
     setLoading(false);
-  }, [isAuth]);
+  }, []);
 
   const fetchOverdueTasks = useCallback(async () => {
-    if (!isAuth) return;
     try {
       const res = await api.get("/tasks/overdue");
       const newOverdueTasks = res.data.tasks || [];
@@ -68,7 +111,7 @@ export default function App() {
     } catch (error) {
       console.error("Failed to fetch overdue tasks:", error);
     }
-  }, [notificationPermission, isAuth]);
+  }, [notificationPermission]);
 
   const visibleTasks = tasks
     .filter((task) => {
@@ -99,8 +142,6 @@ export default function App() {
     });
 
   useEffect(() => {
-    if (!isAuth) return;
-
     let ignore = false;
 
     const load = async () => {
@@ -116,11 +157,9 @@ export default function App() {
     return () => {
       ignore = true;
     };
-  }, [isAuth]);
+  }, []);
 
   useEffect(() => {
-    if (!isAuth) return;
-
     if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission().then((permission) => {
         setNotificationPermission(permission);
@@ -139,33 +178,16 @@ export default function App() {
       clearTimeout(timeoutId);
       clearInterval(interval);
     };
-  }, [isAuth, fetchOverdueTasks]);
+  }, [fetchOverdueTasks]);
 
   useEffect(() => {
-    if (!isAuth) return;
-
     const timeoutId = setTimeout(() => {
       fetchOverdueTasks();
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [tasks.length, isAuth, fetchOverdueTasks]);
+  }, [tasks.length, fetchOverdueTasks]);
 
-  if (!isAuth) {
-    return showSignup ? (
-      <Signup
-        onSignup={() => {
-          setShowSignup(false);
-        }}
-      />
-    ) : (
-      <Login
-        onLogin={() => setIsAuth(true)}
-        onSwitch={() => setShowSignup(true)}
-      />
-    );
-  }
-  // console.log("isAuth:", isAuth);
   const handleNotificationClick = () => {
     setShowNotificationPanel(!showNotificationPanel);
   };
@@ -202,8 +224,8 @@ export default function App() {
           <input
             type="text"
             placeholder="Search tasks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <FilterDropdown
@@ -246,5 +268,48 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+function ProtectedRoute({ children }) {
+  const isAuth = Boolean(localStorage.getItem("token"));
+  return isAuth ? children : <Navigate to="/login" replace />;
+}
+
+export default function App() {
+  const isAuth = Boolean(localStorage.getItem("token"));
+
+  return (
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          isAuth ? (
+            <Navigate to="/" replace />
+          ) : (
+            <Login />
+          )
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          isAuth ? (
+            <Navigate to="/" replace />
+          ) : (
+            <Signup />
+          )
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

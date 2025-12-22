@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
-export default function Signup({ onSignup }) {
+export default function Signup() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +17,7 @@ export default function Signup({ onSignup }) {
         email,
         password,
       });
-      onSignup();
+      navigate("/login", { replace: true });
     } catch {
       setError("User already exists");
     }
@@ -65,13 +67,12 @@ export default function Signup({ onSignup }) {
         </button>
         <p className="mt-4 text-sm text-center">
           Already have an account?{" "}
-          <button
-            type="button"
-            onClick={onSignup}
+          <Link
+            to="/login"
             className="text-blue-600 hover:underline"
           >
             Login
-          </button>
+          </Link>
         </p>
       </form>
     </div>

@@ -1,4 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 export default function Header({ onAdd, onNotificationClick, overdueCount = 0 }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
+
   return (
     <header className="bg-white shadow-sm">
       <div className="flex items-center justify-between max-w-5xl px-4 py-4 mx-auto">
@@ -7,7 +16,6 @@ export default function Header({ onAdd, onNotificationClick, overdueCount = 0 })
         </h1>
 
         <div className="flex items-center gap-3">
-          {/* Notification Bell */}
           <button
             onClick={onNotificationClick}
             className="relative p-2 text-gray-600 transition hover:text-gray-900 hover:bg-gray-100 rounded-full"
@@ -41,10 +49,7 @@ export default function Header({ onAdd, onNotificationClick, overdueCount = 0 })
             Add
           </button>
           <button
-            onClick={() => {
-              localStorage.removeItem("token");
-              window.location.reload();
-            }}
+            onClick={handleLogout}
             className="text-sm text-red-500 hover:underline"
           >
             Logout
