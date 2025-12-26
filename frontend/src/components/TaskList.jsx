@@ -7,21 +7,12 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
+import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 function SortableTask({ task, children }) {
-  const {
-    setNodeRef,
-    attributes,
-    listeners,
-    transform,
-    transition,
-  } = useSortable({ id: task._id });
+  const { setNodeRef, attributes, listeners, transform, transition } =
+    useSortable({ id: task._id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -39,15 +30,15 @@ export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8, // desktop drag threshold
+        distance: 8,
       },
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 200,   // long-press on mobile
+        delay: 200,
         tolerance: 5,
       },
-    })
+    }),
   );
 
   const handleDragEnd = (event) => {
@@ -65,12 +56,8 @@ export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
   if (tasks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center text-center">
-        <p className="mb-2 text-gray-500">
-          No tasks yet
-        </p>
-        <p className="text-sm text-gray-400">
-          Click “Add Task” to get started
-        </p>
+        <p className="mb-2 text-gray-500">No tasks yet</p>
+        <p className="text-sm text-gray-400">Click “Add Task” to get started</p>
       </div>
     );
   }
@@ -79,7 +66,8 @@ export default function TaskList({ tasks, setTasks, refresh, onEdit }) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}>
+      onDragEnd={handleDragEnd}
+    >
       <SortableContext items={tasks.map((t) => t._id)}>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {tasks.map((task) => (

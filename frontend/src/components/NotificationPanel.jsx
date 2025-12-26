@@ -17,7 +17,8 @@ export default function NotificationPanel({
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isOpen, onClose]);
 
@@ -34,14 +35,12 @@ export default function NotificationPanel({
   return (
     <div
       ref={panelRef}
-      className="w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden flex flex-col"
+      className="w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-96 overflow-hidden flex flex-col"
     >
-      <div className="px-4 py-3 border-b border-gray-200 bg-red-50">
+      <div className="px-4 py-3 border-b border-violet-100 bg-violet-50/60">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-900">
-            Overdue Tasks
-          </h3>
-          <span className="text-xs font-medium text-red-600 bg-red-100 px-2 py-1 rounded-full">
+          <h3 className="text-sm font-bold text-violet-700">Overdue Tasks</h3>
+          <span className="text-xs font-bold text-violet-700 bg-violet-100 px-2 py-1 rounded-full">
             {overdueTasks.length}
           </span>
         </div>
@@ -50,7 +49,7 @@ export default function NotificationPanel({
       <div className="overflow-y-auto flex-1">
         {overdueTasks.length === 0 ? (
           <div className="px-4 py-8 text-center">
-            <p className="text-sm text-gray-500">No overdue tasks! 🎉</p>
+            <p className="text-sm text-slate-500">No overdue tasks! 🎉</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-100">
@@ -60,29 +59,30 @@ export default function NotificationPanel({
                 <div
                   key={task._id}
                   onClick={() => onTaskClick(task)}
-                  className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="px-4 py-3 hover:bg-violet-50 cursor-pointer transition-colors"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 truncate">
+                      <h4 className="text-sm font-bold text-slate-800 truncate">
                         {task.title}
                       </h4>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-slate-500 mt-1">
                         Due: {new Date(task.dueDate).toLocaleDateString()}
                       </p>
-                      <span className="inline-block mt-1 text-xs font-medium text-red-600">
+                      <span className="inline-block mt-1 text-xs font-bold text-violet-600">
                         {daysOverdue === 0
                           ? "Due today"
                           : `${daysOverdue} day${daysOverdue > 1 ? "s" : ""} overdue`}
                       </span>
                     </div>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full shrink-0 ${task.priority === "high"
-                        ? "bg-red-100 text-red-700"
-                        : task.priority === "medium"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-green-100 text-green-700"
-                        }`}
+                      className={`text-xs px-2 py-1 rounded-full shrink-0 font-bold ${
+                        task.priority === "high"
+                          ? "bg-red-100 text-red-700"
+                          : task.priority === "medium"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-green-100 text-green-700"
+                      }`}
                     >
                       {task.priority}
                     </span>
@@ -95,8 +95,8 @@ export default function NotificationPanel({
       </div>
 
       {overdueTasks.length > 0 && (
-        <div className="px-4 py-2 border-t border-gray-200 bg-gray-50">
-          <p className="text-xs text-gray-500 text-center">
+        <div className="px-4 py-2 border-t border-violet-100 bg-violet-50/60">
+          <p className="text-xs text-slate-500 text-center">
             Click on a task to view or edit it
           </p>
         </div>
@@ -104,4 +104,3 @@ export default function NotificationPanel({
     </div>
   );
 }
-

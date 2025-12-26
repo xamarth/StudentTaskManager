@@ -9,23 +9,17 @@ export default function FilterDropdown({
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  /* Close on outside click */
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* Active badge text */
   const activeBadge =
     status !== "all"
       ? status.charAt(0).toUpperCase() + status.slice(1)
@@ -36,11 +30,8 @@ export default function FilterDropdown({
         : null;
 
   return (
-    <div
-      ref={dropdownRef}
-      className="relative w-full mb-4 sm:w-auto"
-    >
-      {/* Trigger button */}
+    <div ref={dropdownRef} className="relative w-full mb-4 sm:w-auto">
+
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center justify-between w-full gap-2 px-4 py-2 text-sm font-medium transition bg-white shadow-sm border/10 sm:w-auto rounded-xl hover:bg-gray-100"
@@ -54,14 +45,12 @@ export default function FilterDropdown({
           )}
         </span>
         <span
-          className={`text-xs transition-transform ${open ? "rotate-180" : ""
-            }`}
+          className={`text-xs transition-transform ${open ? "rotate-180" : ""}`}
         >
           ▾
         </span>
       </button>
 
-      {/* Dropdown */}
       <div
         className={`
           absolute left-0 sm:right-0 sm:left-auto
@@ -75,7 +64,6 @@ export default function FilterDropdown({
           }
         `}
       >
-        {/* Status */}
         <div className="mb-4">
           <p className="mb-2 text-xs font-semibold text-gray-500 uppercase">
             Status
@@ -102,10 +90,8 @@ export default function FilterDropdown({
           ))}
         </div>
 
-        {/* Divider */}
         <div className="h-px my-3 bg-gray-100" />
 
-        {/* Sort */}
         <div>
           <p className="mb-2 text-xs font-semibold text-gray-500 uppercase">
             Sort by

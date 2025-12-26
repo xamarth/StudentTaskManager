@@ -7,8 +7,6 @@ import AddTaskModal from "./components/AddTaskModal";
 import EditTaskModal from "./components/EditTaskModal";
 import FilterDropdown from "./components/FilterDropdown";
 import NotificationPanel from "./components/NotificationPanel";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
@@ -17,12 +15,7 @@ function Dashboard() {
   const [editingTask, setEditingTask] = useState(null);
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
-  const [notificationPermission, setNotificationPermission] = useState(() => {
-    if (typeof window !== "undefined" && "Notification" in window) {
-      return Notification.permission;
-    }
-    return "default";
-  });
+  // Notification permission state removed
   const previousOverdueCountRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -52,15 +45,18 @@ function Dashboard() {
 
   const [searchInput, setSearchInput] = useState(search);
 
-  const updateSearchInURL = useCallback((value) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (!value.trim()) {
-      newParams.delete("search");
-    } else {
-      newParams.set("search", value);
-    }
-    setSearchParams(newParams);
-  }, [searchParams, setSearchParams]);
+  const updateSearchInURL = useCallback(
+    (value) => {
+      const newParams = new URLSearchParams(searchParams);
+      if (!value.trim()) {
+        newParams.delete("search");
+      } else {
+        newParams.set("search", value);
+      }
+      setSearchParams(newParams);
+    },
+    [searchParams, setSearchParams],
+  );
 
   useEffect(() => {
     setSearchInput(search);
@@ -88,30 +84,11 @@ function Dashboard() {
       const res = await api.get("/tasks/overdue");
       const newOverdueTasks = res.data.tasks || [];
       setOverdueTasks(newOverdueTasks);
-
-      if (
-        "Notification" in window &&
-        notificationPermission === "granted" &&
-        newOverdueTasks.length > previousOverdueCountRef.current
-      ) {
-        const newCount =
-          newOverdueTasks.length - previousOverdueCountRef.current;
-        new Notification(`You have ${newCount} new overdue task${newCount > 1 ? "s" : ""}`, {
-          body: newOverdueTasks
-            .slice(0, 3)
-            .map((t) => t.title)
-            .join(", "),
-          icon: "/favicon.svg",
-          badge: "/favicon.svg",
-          tag: "overdue-tasks",
-        });
-      }
-
       previousOverdueCountRef.current = newOverdueTasks.length;
     } catch (error) {
       console.error("Failed to fetch overdue tasks:", error);
     }
-  }, [notificationPermission]);
+  }, []);
 
   const visibleTasks = tasks
     .filter((task) => {
@@ -160,19 +137,16 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission().then((permission) => {
-        setNotificationPermission(permission);
-      });
-    }
-
     const timeoutId = setTimeout(() => {
       fetchOverdueTasks();
     }, 0);
 
-    const interval = setInterval(() => {
-      fetchOverdueTasks();
-    }, 5 * 60 * 1000);
+    const interval = setInterval(
+      () => {
+        fetchOverdueTasks();
+      },
+      5 * 60 * 1000,
+    );
 
     return () => {
       clearTimeout(timeoutId);
@@ -198,7 +172,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gray-100">
+    <div className="min-h-screen overflow-hidden bg-slate-50 text-slate-900 selection:bg-violet-200 selection:text-violet-900">
       <div className="relative">
         <Header
           onAdd={() => setShowAddModal(true)}
@@ -276,33 +250,14 @@ function ProtectedRoute({ children }) {
   return isAuth ? children : <Navigate to="/login" replace />;
 }
 
-export default function App() {
-  const isAuth = Boolean(localStorage.getItem("token"));
+import Landing from "./pages/Landing";
 
+export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<Landing />} />
       <Route
-        path="/login"
-        element={
-          isAuth ? (
-            <Navigate to="/" replace />
-          ) : (
-            <Login />
-          )
-        }
-      />
-      <Route
-        path="/signup"
-        element={
-          isAuth ? (
-            <Navigate to="/" replace />
-          ) : (
-            <Signup />
-          )
-        }
-      />
-      <Route
-        path="/"
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <Dashboard />

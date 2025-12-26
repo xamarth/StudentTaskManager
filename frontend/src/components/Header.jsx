@@ -1,6 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Header({ onAdd, onNotificationClick, overdueCount = 0 }) {
+export default function Header({
+  onAdd,
+  onNotificationClick,
+  overdueCount = 0,
+}) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -9,11 +13,14 @@ export default function Header({ onAdd, onNotificationClick, overdueCount = 0 })
   };
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200">
       <div className="flex items-center justify-between max-w-5xl px-4 py-4 mx-auto">
-        <h1 className="text-xl font-semibold text-gray-800">
-          Student Task Manager
-        </h1>
+        <div className="flex items-center gap-2">
+          <div className="bg-violet-600 text-white p-2 rounded-lg">
+            <i className="ph ph-planet text-2xl"></i>
+          </div>
+          <span className="font-bold text-2xl tracking-tight">Orbit</span>
+        </div>
 
         <div className="flex items-center gap-3">
           <button

@@ -6,7 +6,9 @@ exports.createTask = async (req, res) => {
     const { title, description, priority, dueDate } = req.body;
 
     if (!title || !dueDate) {
-      return res.status(400).json({ message: "Title and due date are required" });
+      return res
+        .status(400)
+        .json({ message: "Title and due date are required" });
     }
 
     const task = await Task.create({
@@ -83,7 +85,7 @@ exports.updateTask = async (req, res) => {
       { _id: req.params.id, userId: req.user.id },
       // req.params.id,
       req.body,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!task) return res.status(404).json({ message: "Task not found" });

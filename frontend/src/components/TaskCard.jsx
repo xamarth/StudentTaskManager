@@ -1,4 +1,5 @@
 import api from "../services/api";
+import { Trash2 } from "lucide-react";
 
 export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
   const priorityColors = {
@@ -19,9 +20,7 @@ export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
     refresh();
   };
 
-  const isOverdue =
-    !task.completed &&
-    new Date(task.dueDate) < new Date();
+  const isOverdue = !task.completed && new Date(task.dueDate) < new Date();
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-200 hover:-translate-y-0.5 p-5 flex flex-col justify-between relative group">
@@ -35,9 +34,7 @@ export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
       </div>
       <div>
         <div className="flex items-start justify-between mb-2">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {task.title}
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">{task.title}</h2>
 
           <span
             className={`text-xs px-2 py-1 rounded-full ${priorityColors[task.priority]}`}
@@ -80,10 +77,11 @@ export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
           )}
 
           <button
-            onClick={deleteTask}
-            className="px-3 py-1.5 rounded-full text-xs font-medium bg-red-100 text-red-700 hover:bg-red-200 transition"
+            onClick={() => deleteTask()}
+            className="p-2 rounded-full bg-red-100 text-red-700 hover:bg-red-200 transition flex items-center justify-center"
+            title="Delete"
           >
-            Delete
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       </div>

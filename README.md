@@ -6,21 +6,23 @@
 
 ## 🌐 Live Demo
 
-- **Frontend:** 👉 [task.samarth.site](https://task.samarth.site)
-- **Backend API:** 👉 [api.tasks.samarth.site/api/tasks](https://api.tasks.samarth.site/api/tasks)
+- **Frontend :** 👉 [task.samarth.site](https://task.samarth.site)
+- **Backend :** 👉 [api.tasks.samarth.site/](https://api.tasks.samarth.site/)
 
 <br>
 <div align='center'>
 
-[<img src='screenshots/signup.png' width='180'>](screenshots/signup.png)
-[<img src='screenshots/login.png' width='180'>](screenshots/login.png)
-[<img src='screenshots/empty-state.png' width='180'>](screenshots/empty-state.png)
-[<img src='screenshots/add-task.png' width='180'>](screenshots/add-task.png)
+[<img src='screenshots/landing.png' width='150' alt='Landing page'>](screenshots/landing.png)
+[<img src='screenshots/signup.png' width='150' alt='Signup modal'>](screenshots/signup.png)
+[<img src='screenshots/login.png' width='150' alt='Login modal'>](screenshots/login.png)
+[<img src='screenshots/empty-state.png' width='150' alt='Empty state'>](screenshots/empty-state.png)
+[<img src='screenshots/add-task.png' width='150' alt='Add task modal'>](screenshots/add-task.png)
 
-[<img src='screenshots/task-list.png' width='180'>](screenshots/task-list.png)
-[<img src='screenshots/edit-modal.png' width='180'>](screenshots/edit-modal.png)
-[<img src='screenshots/filters.png' width='180'>](screenshots/filters.png)
-[<img src='screenshots/search.png' width='180'>](screenshots/search.png)
+[<img src='screenshots/task-list.png' width='150' alt='Task list'>](screenshots/task-list.png)
+[<img src='screenshots/edit-modal.png' width='150' alt='Edit modal'>](screenshots/edit-modal.png)
+[<img src='screenshots/filters.png' width='150' alt='Filters'>](screenshots/filters.png)
+[<img src='screenshots/search.png' width='150' alt='Search'>](screenshots/search.png)
+[<img src='screenshots/notification-panel.png' width='150' alt='Notification panel'>](screenshots/notification-panel.png)
 
 </div>
 
@@ -82,21 +84,21 @@ student-task-manager/
 │   ├── public/
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── Header.jsx
-│   │   │   ├── TaskList.jsx
-│   │   │   ├── TaskCard.jsx
-│   │   │   ├── FilterDropdown.jsx
 │   │   │   ├── AddTaskModal.jsx
 │   │   │   ├── EditTaskModal.jsx
-│   │   │   └── NotificationPanel.jsx
+│   │   │   ├── FilterDropdown.jsx
+│   │   │   ├── Header.jsx
+│   │   │   ├── NotificationPanel.jsx
+│   │   │   ├── TaskCard.jsx
+│   │   │   └── TaskList.jsx
 │   │   ├── pages/
-│   │   │   ├── Login.jsx
-│   │   │   └── Signup.jsx
+│   │   │   ├── AuthModals.jsx
+│   │   │   └── Landing.jsx
 │   │   ├── services/
 │   │   │   └── api.js              # Axios instance
 │   │   ├── App.jsx                 # Root component
-│   │   ├── main.jsx                # React entry point
-│   │   └── index.css               # Tailwind CSS entry
+│   │   ├── index.css               # Tailwind CSS entry
+│   │   └── main.jsx                # React entry point
 │   ├── .env                        # Frontend environment variables
 │   ├── index.html
 │   ├── package.json
@@ -104,28 +106,21 @@ student-task-manager/
 │   ├── postcss.config.js
 │   └── vite.config.js
 │
-├── backend/                        # Backend (Node + Express)
-│   ├── src/
-│   │   ├── models/
-│   │   │   └── task.js             # Mongoose Task schema
-│   │   ├── routes/
-│   │   │   └── taskRoutes.js       # Task API routes
-│   │   ├── controllers/
-│   │   │   └── taskController.js   # Task logic
-│   │   ├── config/
-│   │   │   └── db.js               # MongoDB connection
-│   │   ├── app.js                  # Express app setup
-│   │   └── server.js               # Server entry point
-│   ├── .env                        # Backend environment variables
-│   ├── package.json
-│   └── package-lock.json
-│
-├── .gitignore
-├── README.md
-└── screenshots/                    # Project screenshots
-    ├── empty-state.png
-    ├── task-list.png
-    └── edit-modal.png
+└── backend/                        # Backend (Node + Express)
+    ├── src/
+    │   ├── models/
+    │   │   └── task.js             # Mongoose Task schema
+    │   ├── routes/
+    │   │   └── taskRoutes.js       # Task API routes
+    │   ├── controllers/
+    │   │   └── taskController.js   # Task logic
+    │   ├── config/
+    │   │   └── db.js               # MongoDB connection
+    │   ├── app.js                  # Express app setup
+    │   └── server.js               # Server entry point
+    ├── .env                        # Backend environment variables
+    ├── package.json
+    └── package-lock.json
 ```
 
 ## 🗄️ Data Model
@@ -153,13 +148,15 @@ student-task-manager/
 https://api.tasks.samarth.site/api
 ```
 
-| Method | Endpoint   | Description       |
-| ------ | ---------- | ----------------- |
-| POST   | /tasks     | Create a new task |
-| GET    | /tasks     | Get all tasks     |
-| GET    | /tasks/:id | Get task by ID    |
-| PUT    | /tasks/:id | Update a task     |
-| DELETE | /tasks/:id | Delete a task     |
+| Method | Endpoint     | Description             |
+| ------ | ------------ | ----------------------- |
+| POST   | /auth/signup | Register a new user     |
+| POST   | /auth/login  | Login and get JWT token |
+| POST   | /tasks       | Create a new task       |
+| GET    | /tasks       | Get all tasks           |
+| GET    | /tasks/:id   | Get task by ID          |
+| PUT    | /tasks/:id   | Update a task           |
+| DELETE | /tasks/:id   | Delete a task           |
 
 **Query Parameters**
 
