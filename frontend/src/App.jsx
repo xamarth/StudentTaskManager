@@ -1,12 +1,17 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Routes, Route, Navigate, useSearchParams } from "react-router-dom";
-import api from "./services/api";
-import Header from "./components/Header";
-import TaskList from "./components/TaskList";
-import AddTaskModal from "./components/AddTaskModal";
-import EditTaskModal from "./components/EditTaskModal";
-import FilterDropdown from "./components/FilterDropdown";
-import NotificationPanel from "./components/NotificationPanel";
+
+import {
+  AddTaskModal,
+  EditTaskModal,
+  FilterDropdown,
+  Header,
+  NotificationPanel,
+  TaskList
+} from "@/components";
+
+import { api } from "@/services";
+import { Landing } from "@/pages";
 
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
@@ -15,7 +20,6 @@ function Dashboard() {
   const [editingTask, setEditingTask] = useState(null);
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
-  // Notification permission state removed
   const previousOverdueCountRef = useRef(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -247,10 +251,8 @@ function Dashboard() {
 
 function ProtectedRoute({ children }) {
   const isAuth = Boolean(localStorage.getItem("token"));
-  return isAuth ? children : <Navigate to="/login" replace />;
+  return isAuth ? children : <Navigate to="/" replace />;
 }
-
-import Landing from "./pages/Landing";
 
 export default function App() {
   return (

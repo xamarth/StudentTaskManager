@@ -1,7 +1,20 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+import { resolve, dirname } from 'path'
+import { fileURLToPath } from 'url'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+  ],
+  server: {
+    historyApiFallback: true,
+  },
+  resolve: {
+    alias: {
+      '@/components': resolve(dirname(fileURLToPath(import.meta.url)), 'src/components'),
+      '@/pages': resolve(dirname(fileURLToPath(import.meta.url)), 'src/pages'),
+      '@/services': resolve(dirname(fileURLToPath(import.meta.url)), 'src/services'),
+    },
+  },
 });

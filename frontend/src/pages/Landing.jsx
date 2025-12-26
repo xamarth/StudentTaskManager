@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginModal, SignupModal } from "./AuthModals";
+import { LoginModal, SignupModal } from "@/pages";
 import { PlanetIcon, ArrowRightIcon, PlayCircleIcon, TrophyIcon, PlusIcon, ConfettiIcon, CheckIcon } from "@phosphor-icons/react";
 
 const initialTasks = [
