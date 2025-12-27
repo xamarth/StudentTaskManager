@@ -1,11 +1,17 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 export default defineConfig({
   plugins: [
-    react(),
+    react({
+      babel: {
+        plugins: [['babel-plugin-react-compiler']],
+      },
+    }),
+    tailwindcss(),
   ],
   server: {
     historyApiFallback: true,
@@ -17,4 +23,4 @@ export default defineConfig({
       '@/services': resolve(dirname(fileURLToPath(import.meta.url)), 'src/services'),
     },
   },
-});
+})

@@ -1,25 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { PlanetIcon } from "@phosphor-icons/react";
 
 export default function Header({
   onAdd,
   onNotificationClick,
   overdueCount = 0,
 }) {
-  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login", { replace: true });
+    window.dispatchEvent(new Event("authChange"));
   };
 
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200">
       <div className="flex items-center justify-between max-w-5xl px-4 py-4 mx-auto">
         <div className="flex items-center gap-2">
-          <div className="bg-violet-600 text-white p-2 rounded-lg">
-            <i className="ph ph-planet text-2xl"></i>
+          <div className="rounded-lg">
+            <PlanetIcon size={32} weight="fill" className="text-violet-600" />
           </div>
-          <span className="font-bold text-2xl tracking-tight">Orbit</span>
+          <span className="font-bold text-2xl tracking-tight">
+            Orbit
+          </span>
         </div>
 
         <div className="flex items-center gap-3">

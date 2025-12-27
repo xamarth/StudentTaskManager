@@ -1,5 +1,5 @@
+import api from "@/services/api";
 import { useState } from "react";
-import { api } from "@/services";
 
 export default function EditTaskModal({ task, onClose, onUpdated }) {
   const [form, setForm] = useState({

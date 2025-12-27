@@ -1,97 +1,54 @@
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { AddTaskModal, EditTaskModal, FilterDropdown, Header, NotificationPanel, TaskList } from "@/components";
+import api from "@/services/api";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import {
-  AddTaskModal,
-  EditTaskModal,
-  FilterDropdown,
-  Header,
-  NotificationPanel,
-  TaskList
-} from "@/components";
+const Dashboard = () => {
 
-import { api } from "@/services";
-
-export default function Dashboard() {
+  const [isAuth] = useState(Boolean(localStorage.getItem("token")));
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("none");
+  const [search, setSearch] = useState("");
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
   const previousOverdueCountRef = useRef(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const statusFilter = searchParams.get("status") || "all";
-  const sortBy = searchParams.get("sort") || "none";
-  const search = searchParams.get("search") || "";
-
-  const setStatusFilter = (value) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value === "all") {
-      newParams.delete("status");
-    } else {
-      newParams.set("status", value);
-    }
-    setSearchParams(newParams);
-  };
-
-  const setSortBy = (value) => {
-    const newParams = new URLSearchParams(searchParams);
-    if (value === "none") {
-      newParams.delete("sort");
-    } else {
-      newParams.set("sort", value);
-    }
-    setSearchParams(newParams);
-  };
-
-  const [searchInput, setSearchInput] = useState(search);
-
-  const updateSearchInURL = useCallback(
-    (value) => {
-      const newParams = new URLSearchParams(searchParams);
-      if (!value.trim()) {
-        newParams.delete("search");
-      } else {
-        newParams.set("search", value);
-      }
-      setSearchParams(newParams);
-    },
-    [searchParams, setSearchParams],
-  );
-
-  useEffect(() => {
-    setSearchInput(search);
-  }, [search]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (searchInput !== search) {
-        updateSearchInURL(searchInput);
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchInput, search, updateSearchInURL]);
 
   const fetchTasks = useCallback(async (params = {}) => {
+    if (!isAuth) return;
     setLoading(true);
     const res = await api.get("/tasks", { params });
     setTasks(res.data);
     setLoading(false);
-  }, []);
+  }, [isAuth]);
 
   const fetchOverdueTasks = useCallback(async () => {
+    if (!isAuth) return;
     try {
       const res = await api.get("/tasks/overdue");
       const newOverdueTasks = res.data.tasks || [];
       setOverdueTasks(newOverdueTasks);
+
+      if (newOverdueTasks.length > previousOverdueCountRef.current) {
+        const newCount = newOverdueTasks.length - previousOverdueCountRef.current;
+        new Notification(`You have ${newCount} new overdue task${newCount > 1 ? "s" : ""}`, {
+          body: newOverdueTasks
+            .slice(0, 3)
+            .map((t) => t.title)
+            .join(", "),
+          icon: "/favicon.svg",
+          badge: "/favicon.svg",
+          tag: "overdue-tasks",
+        });
+      }
+
       previousOverdueCountRef.current = newOverdueTasks.length;
     } catch (error) {
       console.error("Failed to fetch overdue tasks:", error);
     }
-  }, []);
+  }, [isAuth]);
 
   const visibleTasks = tasks
     .filter((task) => {
@@ -122,6 +79,8 @@ export default function Dashboard() {
     });
 
   useEffect(() => {
+    if (!isAuth) return;
+
     let ignore = false;
 
     const load = async () => {
@@ -137,33 +96,34 @@ export default function Dashboard() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [isAuth]);
 
   useEffect(() => {
+    if (!isAuth) return;
+
     const timeoutId = setTimeout(() => {
       fetchOverdueTasks();
     }, 0);
 
-    const interval = setInterval(
-      () => {
-        fetchOverdueTasks();
-      },
-      5 * 60 * 1000,
-    );
+    const interval = setInterval(() => {
+      fetchOverdueTasks();
+    }, 5 * 60 * 1000);
 
     return () => {
       clearTimeout(timeoutId);
       clearInterval(interval);
     };
-  }, [fetchOverdueTasks]);
+  }, [isAuth, fetchOverdueTasks]);
 
   useEffect(() => {
+    if (!isAuth) return;
+
     const timeoutId = setTimeout(() => {
       fetchOverdueTasks();
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [tasks.length, fetchOverdueTasks]);
+  }, [tasks.length, isAuth, fetchOverdueTasks]);
 
   const handleNotificationClick = () => {
     setShowNotificationPanel(!showNotificationPanel);
@@ -201,8 +161,8 @@ export default function Dashboard() {
           <input
             type="text"
             placeholder="Search tasks..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg sm:max-w-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <FilterDropdown
@@ -245,5 +205,7 @@ export default function Dashboard() {
         />
       )}
     </div>
-  );
+  )
 }
+
+export default Dashboard

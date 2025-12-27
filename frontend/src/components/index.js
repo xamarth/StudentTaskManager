@@ -4,6 +4,8 @@ import FilterDropdown from "./FilterDropdown"
 import Header from "./Header"
 import NotificationPanel from "./NotificationPanel"
 import TaskList from "./TaskList"
+import LoginModal from "./Login"
+import SignupModal from "./Signup"
 
 export {
   AddTaskModal,
@@ -11,5 +13,7 @@ export {
   FilterDropdown,
   Header,
   NotificationPanel,
-  TaskList
+  TaskList,
+  LoginModal,
+  SignupModal,
 }

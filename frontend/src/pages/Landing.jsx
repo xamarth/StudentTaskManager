@@ -1,7 +1,17 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { LoginModal, SignupModal } from "@/pages";
-import { PlanetIcon, ArrowRightIcon, PlayCircleIcon, TrophyIcon, PlusIcon, ConfettiIcon, CheckIcon } from "@phosphor-icons/react";
+import { useState } from "react";
+import {
+  PlanetIcon,
+  ArrowRightIcon,
+  PlayCircleIcon,
+  TrophyIcon,
+  PlusIcon,
+  ConfettiIcon,
+  CheckIcon
+} from "@phosphor-icons/react";
+import {
+  LoginModal,
+  SignupModal
+} from "@/components";
 
 const initialTasks = [
   {
@@ -20,16 +30,8 @@ const initialTasks = [
   },
 ];
 
-export default function Landing() {
-  const navigate = useNavigate();
+export default function Landing({ onAuth }) {
   const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/dashboard", { replace: true });
-    }
-  }, [navigate]);
   const [showSignup, setShowSignup] = useState(false);
   const [tasks, setTasks] = useState(initialTasks);
   const [input, setInput] = useState("");
@@ -81,8 +83,22 @@ export default function Landing() {
     setShowSignup(modal === "signup");
   };
 
+  const handleAuthCallback = (modal) => {
+    if (modal === "signup") {
+      handleAuthSwitch("signup");
+      return;
+    }
+
+    if (modal === "login") {
+      handleAuthSwitch("login");
+      return;
+    }
+    setShowLogin(false);
+    onAuth?.();
+  };
+
   return (
-    <div className="bg-slate-50 text-slate-900 overflow-x-hidden selection:bg-violet-200 selection:text-violet-900 min-h-screen">
+    <div className="bg-slate-50 text-slate-900 overflow-hidden selection:bg-violet-200 selection:text-violet-900 min-h-dvh min-w-dvw">
 
       <nav className="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -124,7 +140,8 @@ export default function Landing() {
                 onClick={() => {
                   const token = localStorage.getItem("token");
                   if (token) {
-                    navigate("/dashboard");
+                    // navigate("/dashboard");
+                    console.log("Navigate to dashboard");
                   } else {
                     setShowLogin(true);
                   }
@@ -145,7 +162,8 @@ export default function Landing() {
                 onClick={() => {
                   const token = localStorage.getItem("token");
                   if (token) {
-                    navigate("/dashboard");
+                    // navigate("/dashboard");
+                    console.log("Navigate to dashboard");
                   } else {
                     setShowLogin(true);
                   }
@@ -330,12 +348,20 @@ export default function Landing() {
       <LoginModal
         open={showLogin}
         onClose={() => setShowLogin(false)}
-        onLogin={handleAuthSwitch}
+        onLogin={handleAuthCallback}
       />
       <SignupModal
         open={showSignup}
         onClose={() => setShowSignup(false)}
-        onSignup={handleAuthSwitch}
+        onSignup={(modal) => {
+          // if signup requests login view, open it; otherwise close
+          if (modal === "login") {
+            setShowSignup(false);
+            setShowLogin(true);
+            return;
+          }
+          setShowSignup(false);
+        }}
       />
     </div>
   );

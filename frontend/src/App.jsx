@@ -1,24 +1,29 @@
+import { useState, useEffect } from "react";
 import { Dashboard, Landing } from "@/pages";
-import { Routes, Route, Navigate } from "react-router-dom";
 
-function ProtectedRoute({ children }) {
-  const isAuth = Boolean(localStorage.getItem("token"));
-  return isAuth ? children : <Navigate to="/" replace />;
-}
+const App = () => {
+  const [isAuth, setIsAuth] = useState(Boolean(localStorage.getItem("token")));
 
-export default function App() {
+  useEffect(() => {
+    const handleStorage = () => setIsAuth(Boolean(localStorage.getItem("token")));
+    const handleAuthChange = () => setIsAuth(Boolean(localStorage.getItem("token")));
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("authChange", handleAuthChange);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("authChange", handleAuthChange);
+    };
+  }, []);
+
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <main>
+      {isAuth ? (
+        <Dashboard />
+      ) : (
+        <Landing onAuth={() => setIsAuth(true)} />
+      )}
+    </main>
   );
-}
+};
+
+export default App;

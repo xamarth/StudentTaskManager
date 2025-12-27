@@ -1,5 +1,5 @@
+import api from "@/services/api";
 import { Trash2 } from "lucide-react";
-import { api } from "@/services";
 
 export default function TaskCard({ task, refresh, onEdit, dragHandleProps }) {
   const priorityColors = {
