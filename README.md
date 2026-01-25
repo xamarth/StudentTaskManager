@@ -4,11 +4,6 @@
 
 <p align='center'><b>A modern, full-stack task management web application with authentication, overdue notifications, drag-and-drop, and a responsive UI. Built with React, Express, and MongoDB, and deployed to production.</b></p>
 
-## 🌐 Live Demo
-
-- **Frontend :** 👉 [task.samarth.site](https://task.samarth.site)
-- **Backend :** 👉 [api.tasks.samarth.site/](https://api.tasks.samarth.site/)
-
 <br>
 <div align='center'>
 
